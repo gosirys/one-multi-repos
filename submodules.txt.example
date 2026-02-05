@@ -1,3 +1,17 @@
-# Copy to submodules.txt, then list one Git URL per line:
+# Copy to submodules.txt, then list one Git URL per line.
+#
+# FULL REPO SYNC (default):
 # https://github.com/you/foo.git
-# https://github.com/you/bar.git
+#
+# SELECTIVE SYNC - only keep specific directories/files:
+# Use format: repo_url:path1,path2,path3
+#
+# Examples:
+# https://github.com/you/bar.git:src/,docs/
+# https://github.com/you/baz.git:README.md,package.json,src/core/
+# https://github.com/you/lib.git:lib/utils/,lib/helpers/,types.d.ts
+#
+# Notes:
+# - Directories should end with /
+# - Multiple paths separated by commas (no spaces)
+# - Sparse checkout uses "cone" mode for best performance

@@ -32,6 +32,28 @@ jobs:
             && git reset --hard origin/$(git rev-parse --abbrev-ref HEAD) \
             || echo "Failed to reset submodule"'
 
+      - name: Restore sparse checkout configuration
+        run: |
+          SPARSE_CONFIG=".sparse-checkout-config"
+          if [[ -f "$SPARSE_CONFIG" ]]; then
+            echo "Restoring sparse checkout configuration..."
+            while IFS=':' read -r name paths; do
+              [[ -z "$name" ]] && continue
+              submodule_path="modules/$name"
+              if [[ -d "$submodule_path" ]]; then
+                echo "  → Configuring sparse checkout for $name: $paths"
+                pushd "$submodule_path" > /dev/null
+                git sparse-checkout init --cone
+                IFS=',' read -ra path_array <<< "$paths"
+                git sparse-checkout set "${path_array[@]}"
+                popd > /dev/null
+              fi
+            done < "$SPARSE_CONFIG"
+            echo "✔ Sparse checkout configuration restored"
+          else
+            echo "No sparse checkout configuration found (full repo sync for all)"
+          fi
+
       - name: Commit changes in submodules
         run: |
           git submodule foreach --recursive '
