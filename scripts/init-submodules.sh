@@ -48,15 +48,29 @@ configure_sparse_checkout() {
 
 	pushd "$submodule_path" > /dev/null
 
-	# Enable sparse checkout
-	git sparse-checkout init --cone
-
-	# Convert comma-separated paths to space-separated for sparse-checkout set
+	# Convert comma-separated paths to array
 	local path_array
 	IFS=',' read -ra path_array <<< "$paths"
 
-	# Set the sparse checkout paths
-	git sparse-checkout set "${path_array[@]}"
+	# Check if any path is a file (doesn't end with /)
+	local has_files=false
+	for p in "${path_array[@]}"; do
+		if [[ "$p" != */ ]]; then
+			has_files=true
+			break
+		fi
+	done
+
+	if $has_files; then
+		# Use non-cone mode for file-level granularity
+		git sparse-checkout init --no-cone
+		# Write patterns to sparse-checkout file
+		git sparse-checkout set "${path_array[@]}"
+	else
+		# Use cone mode for directories (better performance)
+		git sparse-checkout init --cone
+		git sparse-checkout set "${path_array[@]}"
+	fi
 
 	popd > /dev/null
 }

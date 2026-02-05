@@ -240,7 +240,7 @@ https://github.com/you/lib.git:lib/utils/,lib/helpers/,types.d.ts
 - **Directories** should end with `/` (e.g., `src/`, `docs/api/`)
 - **Files** are specified by their path (e.g., `README.md`, `src/index.ts`)
 - **Multiple paths** are separated by commas (no spaces)
-- Uses Git's **cone mode** sparse checkout for best performance
+- **Mode selection**: Automatically uses cone mode (faster) for directory-only configs, or non-cone mode when individual files are specified
 
 ### How It Works
 

@@ -14,4 +14,4 @@
 # Notes:
 # - Directories should end with /
 # - Multiple paths separated by commas (no spaces)
-# - Sparse checkout uses "cone" mode for best performance
+# - Auto-selects cone mode (dirs only) or non-cone mode (files included)
